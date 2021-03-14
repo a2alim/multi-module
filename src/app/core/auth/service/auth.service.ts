@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from 'src/environments/environment';
@@ -52,19 +52,16 @@ export class AuthService {
     }
 
     this.httpClient.post<any>(this.AUTH_URL, params.toString(), { headers }).pipe(
-      map(res => res)).subscribe(
+      map((res: any) => res)).subscribe(
         data => {
           this.saveToken(data);
-          this._isLoading = false;
-          this.isLoading.next(this._isLoading);
+          this.isLoading.next(false);
           this.errMsg.next('');
         },
         err => {
-          this._isLoading = false;
-          this.isLoading.next(this._isLoading);
+          this.isLoading.next(false);
           console.error('Credentials error ', err);
           var errorMessage = navigator.onLine ? err.error.error_description : 'Please check your internet connection or try again later';
-
           if (errorMessage === undefined) {
             errorMessage = 'Service not available, please contact with Administrator';
           }
@@ -75,13 +72,8 @@ export class AuthService {
   }
 
   saveToken(token) {
-    //var expireDate = new Date().getTime() + (1000 * token.expires_in);
-    var expireDate = token.expires_in;
-    //this.cookieService.set("access_token", token.access_token, expireDate);
-    this.customCookieService.setWithExpiryInSeconds("access_token", token.access_token, expireDate);
-    //console.log('Obtained Access token');
+    this.customCookieService.setWithExpiryInSeconds("access_token", token.access_token, token.expires_in);
     this.setUserInformation();
-    //this.router.navigate(['/']);
   }
 
   setUserInformation(): void {
@@ -99,9 +91,8 @@ export class AuthService {
             }
           });
         }
-        if (this.userDetils.obj != null) {
+        if (this.userDetils.obj) {
           localStorage.setItem('userInfo', JSON.stringify(this.userDetils.obj));
-
           if (this.userDetils.obj.userDefaultPageLink) {
             this.router.navigate([this.userDetils.obj.userDefaultPageLink]);
           } else {
@@ -129,31 +120,20 @@ export class AuthService {
       res => {
         console.log('Delete token response ', res);
         if (res.success) {
-
           this.customCookieService.delete('access_token');
           localStorage.clear();
-          //localStorage.removeItem('userInfo');
           this.router.navigate(['/login']);
-
-          // console.log("Revoke Occurred In Delete token ", res);
-
         } else {
-
           this.customCookieService.delete('access_token');
           localStorage.clear();
-          // localStorage.removeItem('userInfo');
           this.router.navigate(['/login']);
-
-          // console.log("Error Occurred In Delete token ", res);
         }
       },
       err => {
         console.log('Error Occurred In Delete token ', err);
         this.customCookieService.delete('access_token');
         localStorage.clear();
-        // localStorage.removeItem('userInfo');
         this.router.navigate(['/login']);
-
       }
     );
   }
@@ -163,10 +143,8 @@ export class AuthService {
       'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'
     };
-
-    const deleteAPIURL = `${this.BASE_URL}${this.API_URL}${this.END_POINT}/logout`;
-
-    return this.httpClient.delete<any>(deleteAPIURL, { headers }).pipe(
+    const DELETE_APIURL = `${this.BASE_URL}${this.API_URL}${this.END_POINT}/logout`;
+    return this.httpClient.delete<any>(DELETE_APIURL, { headers }).pipe(
       map((res: Response) => res),
       catchError((error: any) => {
         return throwError(error);
@@ -175,14 +153,7 @@ export class AuthService {
   }
 
   refreshAccessToken(): Observable<any> {
-    // console.log("Need Check.");
-    const currentToken = this.obtainNewAccessToken();
-
-    return of(this.obtainNewAccessToken()).pipe();
-  }
-
-  obtainNewAccessToken(): Observable<any> {
-    return new Observable;
+    return of(new Observable);
   }
 
 }

@@ -10,40 +10,27 @@ import { AuthService } from './auth.service';
 export class TokenInterceptorService implements HttpInterceptor {
 
   private refreshTokenInProgress = false;
-  // Refresh Token Subject tracks the current token, or is null if no token is currently
-  // available (e.g. refresh pending).
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
   constructor(public authService: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(this.addAuthenticationToken(request)).pipe(
       catchError((error: HttpErrorResponse) => {
-        // We don't want to refresh token for some requests like login or refresh token itself
-        // So we verify url and we throw an error if it's the case
         console.log("Login request error", error.status);
         if (
           request.url.includes("refreshtoken") ||
           request.url.includes("oauth/token")
         ) {
-          // We do another check to see if refresh token failed
-          // In this case we want to logout user and to redirect it to login page
-
           if (request.url.includes("refreshtoken")) {
             this.authService.logout();
           }
-
-          // return Observable.throw(error);
           return throwError(error);
         }
-
-        // If error status is different than 401 we want to skip refresh token
-        // So we check that and throw the error if it's the case
         if (error.status !== 401) {
-          // return Observable.throw(error);
           return throwError(error);
         }
-
         if (this.refreshTokenInProgress) {
           // If refreshTokenInProgress is true, we will wait until refreshTokenSubject has a non-null value
           // – which means the new token is ready and we can retry the request again
@@ -78,13 +65,8 @@ export class TokenInterceptorService implements HttpInterceptor {
   }
 
   addAuthenticationToken(request) {
-    // Get access token from Local Storage
     const accessToken = this.authService.getAccessToken();
-    console.log('accessToken', accessToken);
     
-
-    // If access token is null this means that user is not logged in
-    // And we return the original request
     if (!accessToken) {
       return request;
     }

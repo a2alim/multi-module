@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { ShareModule } from '../share/share.module';
 import { AuthService } from './auth/service/auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import{TokenInterceptorService} from './auth/service/token-interceptor.service'
+import { TokenInterceptorService } from './auth/service/token-interceptor.service'
 
 
 
@@ -24,7 +24,7 @@ import{TokenInterceptorService} from './auth/service/token-interceptor.service'
       useClass: TokenInterceptorService,
       multi: true
     }
-],
+  ],
   exports: []
 })
 export class CoreModule { }
