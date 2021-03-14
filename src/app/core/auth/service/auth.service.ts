@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
@@ -36,7 +36,6 @@ export class AuthService {
   ) { }
 
   obtainAccessToken(user: any) {
-    console.log('BASE_URL ==', this.BASE_URL);
 
     this._isLoading = true;
     this.isLoading.next(this._isLoading);
@@ -76,21 +75,20 @@ export class AuthService {
   }
 
   saveToken(token) {
-    console.log('===========:', token);
     //var expireDate = new Date().getTime() + (1000 * token.expires_in);
     var expireDate = token.expires_in;
     //this.cookieService.set("access_token", token.access_token, expireDate);
     this.customCookieService.setWithExpiryInSeconds("access_token", token.access_token, expireDate);
     //console.log('Obtained Access token');
     this.setUserInformation();
-    //        this.router.navigate(['/']);
+    //this.router.navigate(['/']);
   }
 
   setUserInformation(): void {
     this.httpClient.get<any>(`${this.USER_DETAILS}`, <any>{}).subscribe(
       res => {
         this.userDetils = res;
-        console.log('userDetils',this.userDetils);
+        console.log('userDetils', this.userDetils);
         const _userInfo = this.userDetils.obj;
         const companyList = _userInfo.companyList;
         if (companyList) {
@@ -120,6 +118,71 @@ export class AuthService {
         console.log('Error : ', err)
       }
     )
+  }
+
+  getAccessToken(): any {
+    return this.customCookieService.get('access_token');
+  }
+
+  logout() {
+    this.deleteToken().subscribe(
+      res => {
+        console.log('Delete token response ', res);
+        if (res.success) {
+
+          this.customCookieService.delete('access_token');
+          localStorage.clear();
+          //localStorage.removeItem('userInfo');
+          this.router.navigate(['/login']);
+
+          // console.log("Revoke Occurred In Delete token ", res);
+
+        } else {
+
+          this.customCookieService.delete('access_token');
+          localStorage.clear();
+          // localStorage.removeItem('userInfo');
+          this.router.navigate(['/login']);
+
+          // console.log("Error Occurred In Delete token ", res);
+        }
+      },
+      err => {
+        console.log('Error Occurred In Delete token ', err);
+        this.customCookieService.delete('access_token');
+        localStorage.clear();
+        // localStorage.removeItem('userInfo');
+        this.router.navigate(['/login']);
+
+      }
+    );
+  }
+
+  deleteToken(): Observable<any> {
+    const headers = {
+      'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'
+    };
+
+    const deleteAPIURL = `${this.BASE_URL}${this.API_URL}${this.END_POINT}/logout`;
+
+    return this.httpClient.delete<any>(deleteAPIURL, { headers }).pipe(
+      map((res: Response) => res),
+      catchError((error: any) => {
+        return throwError(error);
+      })
+    );
+  }
+
+  refreshAccessToken(): Observable<any> {
+    // console.log("Need Check.");
+    const currentToken = this.obtainNewAccessToken();
+
+    return of(this.obtainNewAccessToken()).pipe();
+  }
+
+  obtainNewAccessToken(): Observable<any> {
+    return new Observable;
   }
 
 }
