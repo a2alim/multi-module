@@ -1,0 +1,24 @@
+<div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4 text-center">
+           <h3>User Login</h3>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <label for="usernm">User Name</label>
+            <input type="text" class="form-control" id="usernm" [(ngModel)]="user.userName" placeholder="Enter your username">
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <label for="pass">Password</label>
+            <input type="password" class="form-control" id="pass" [(ngModel)]="user.password"  placeholder="Enter your password">
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-success mt-2" (click)="onSubmitLogin()">Submit</button>
+        </div>
+    </div>
+</div>
