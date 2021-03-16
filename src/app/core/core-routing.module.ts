@@ -4,11 +4,15 @@ import { ViewCoreComponent } from './view-core/view-core.component';
 import { HomeLayoutComponent } from './home-layout/home-layout.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthComponent } from './auth/auth.component';
+import { AuthGuardService } from './auth/service/auth-guard.service';
+import { BrowserNavigationGuardService } from './auth/service/browser-navigation-guard.service';
+import { LoginComponent } from './login/login.component';
 
 const routes : Routes = [
   {
     path: '',
-    component: HomeLayoutComponent,
+    component: LoginComponent,
+    canActivate: [BrowserNavigationGuardService],
     children: [
       {
         path: 'login',
@@ -18,15 +22,18 @@ const routes : Routes = [
   },
   {
     path: 'login',
-    component: AuthComponent
+    component: AuthComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'view-core',
     component: ViewCoreComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'emp',
     component: HomeLayoutComponent,
+    canActivate: [AuthGuardService],
     loadChildren:'../employee/emp.module#EmpModule'
   },
 ]

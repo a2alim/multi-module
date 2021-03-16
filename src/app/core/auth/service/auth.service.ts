@@ -18,6 +18,7 @@ export class AuthService {
   private USER_DETAILS = this.BASE_URL + this.API_URL + '/api/coreUser/user-details';
   private AUTH_URL = `${this.BASE_URL}${this.API_URL}${this.END_POINT}`;
 
+  private loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public _isLoading: boolean = false;
   private isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private errMsg: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -27,6 +28,11 @@ export class AuthService {
   private GRANT_TYPE = 'password';
 
   userDetils: any = {};
+
+  get isLoggedIn() {
+    this.checkCredentials();
+    return this.loggedIn.asObservable();
+  }
 
   constructor(
     private router: Router,
@@ -94,7 +100,8 @@ export class AuthService {
         if (this.userDetils.obj) {
           localStorage.setItem('userInfo', JSON.stringify(this.userDetils.obj));
           if (this.userDetils.obj.userDefaultPageLink) {
-            this.router.navigate([this.userDetils.obj.userDefaultPageLink]);
+            this.router.navigate(['emp']);
+            // this.router.navigate([this.userDetils.obj.userDefaultPageLink]);
           } else {
             this.router.navigate(['/']);
           }
@@ -154,6 +161,14 @@ export class AuthService {
 
   refreshAccessToken(): Observable<any> {
     return of(new Observable);
+  }
+
+  checkCredentials() {
+    if (!this.customCookieService.get('access_token')) {
+      this.loggedIn.next(false);
+    } else {
+      this.loggedIn.next(true);
+    }
   }
 
 }

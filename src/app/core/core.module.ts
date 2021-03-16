@@ -8,6 +8,8 @@ import { ShareModule } from '../share/share.module';
 import { AuthService } from './auth/service/auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptorService } from './auth/service/token-interceptor.service'
+import { BrowserNavigationGuardService } from './auth/service/browser-navigation-guard.service';
+import { AuthGuardService } from './auth/service/auth-guard.service';
 
 
 
@@ -19,6 +21,8 @@ import { TokenInterceptorService } from './auth/service/token-interceptor.servic
   ],
   providers: [
     AuthService,
+    AuthGuardService,
+    BrowserNavigationGuardService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,

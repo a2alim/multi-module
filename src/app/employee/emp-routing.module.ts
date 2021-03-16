@@ -1,13 +1,18 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { EmployeeComponent } from './employee/employee.component';
-import { ViewCoreComponent } from '../core/view-core/view-core.component';
+import { AuthGuardService } from '../core/auth/service/auth-guard.service';
 
 const routes: Routes = [
   {
+    path: '',
+    component: EmployeeComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: 'view-emp',
     component: EmployeeComponent,
+    canActivate: [AuthGuardService]
   },
 ]
 @NgModule({
