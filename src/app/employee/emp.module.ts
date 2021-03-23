@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { EmployeeComponent } from './employee/employee.component';
 import { EmpRoutingModule } from './emp-routing.module';
+import { ViewCoreComponent } from '../core/view-core/view-core.component';
 
 
 
 @NgModule({
-  declarations: [EmployeeComponent],
+  declarations: [
+    EmployeeComponent
+  ],
   imports: [
     EmpRoutingModule
   ],
-  exports:[
-    EmployeeComponent
-  ]
+  exports:[]
 })
 export class EmpModule { }

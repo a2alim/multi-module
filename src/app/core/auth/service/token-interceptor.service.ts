@@ -32,8 +32,6 @@ export class TokenInterceptorService implements HttpInterceptor {
           return throwError(error);
         }
         if (this.refreshTokenInProgress) {
-          // If refreshTokenInProgress is true, we will wait until refreshTokenSubject has a non-null value
-          // – which means the new token is ready and we can retry the request again
           return this.refreshTokenSubject.pipe(
             filter(result => result !== null),
             take(1),
@@ -41,14 +39,9 @@ export class TokenInterceptorService implements HttpInterceptor {
           );
         } else {
           this.refreshTokenInProgress = true;
-          // Set the refreshTokenSubject to null so that subsequent API calls will wait until the new token has been retrieved
           this.refreshTokenSubject.next(null);
-
-          // Call auth.refreshAccessToken(this is an Observable that will be returned)
           return this.authService.refreshAccessToken().pipe(
             switchMap((token: any) => {
-              //When the call to refreshToken completes we reset the refreshTokenInProgress to false
-              // for the next time the token needs to be refreshed
               this.refreshTokenInProgress = false;
               this.refreshTokenSubject.next(token);
               return next.handle(this.addAuthenticationToken(request));
@@ -66,7 +59,7 @@ export class TokenInterceptorService implements HttpInterceptor {
 
   addAuthenticationToken(request) {
     const accessToken = this.authService.getAccessToken();
-    
+
     if (!accessToken) {
       return request;
     }

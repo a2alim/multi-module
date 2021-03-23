@@ -5,20 +5,13 @@ import { HomeLayoutComponent } from './home-layout/home-layout.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthComponent } from './auth/auth.component';
 import { AuthGuardService } from './auth/service/auth-guard.service';
-import { BrowserNavigationGuardService } from './auth/service/browser-navigation-guard.service';
-import { LoginComponent } from './login/login.component';
+import { EmployeeComponent } from '../employee/employee/employee.component';
 
 const routes : Routes = [
   {
     path: '',
-    component: LoginComponent,
-    canActivate: [BrowserNavigationGuardService],
-    children: [
-      {
-        path: 'login',
-        component: AuthComponent
-      }
-    ]
+    component: AuthComponent,
+    canActivate: [AuthGuardService]
   },
   {
     path: 'login',
@@ -31,16 +24,31 @@ const routes : Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'view-emp',
+    component: EmployeeComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: 'emp',
     component: HomeLayoutComponent,
     canActivate: [AuthGuardService],
     loadChildren:'../employee/emp.module#EmpModule'
   },
+  {
+    path: 'hr',
+    component: HomeLayoutComponent,
+    canActivate: [AuthGuardService],
+    loadChildren:'../hr/hr.module#HrModule'
+  },
 ]
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', })],
-  exports: [RouterModule],
+  imports: [
+    RouterModule.forRoot(routes,{ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', })
+  ],
+  exports: [
+    RouterModule
+  ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 export class CoreRoutingModule { }

@@ -1,20 +1,23 @@
-import { NgModule } from '@angular/core';
-import { CoreRoutingModule } from './core-routing.module';
-import { ViewCoreComponent } from './view-core/view-core.component';
-import { HomeLayoutComponent } from './home-layout/home-layout.component';
-import { AuthComponent } from './auth/auth.component';
-import { LoginComponent } from './login/login.component';
-import { ShareModule } from '../share/share.module';
-import { AuthService } from './auth/service/auth.service';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptorService } from './auth/service/token-interceptor.service'
-import { BrowserNavigationGuardService } from './auth/service/browser-navigation-guard.service';
-import { AuthGuardService } from './auth/service/auth-guard.service';
-
-
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { ShareModule } from "../share/share.module";
+import { AuthComponent } from "./auth/auth.component";
+import { AuthGuardService } from "./auth/service/auth-guard.service";
+import { AuthService } from "./auth/service/auth.service";
+import { BrowserNavigationGuardService } from "./auth/service/browser-navigation-guard.service";
+import { TokenInterceptorService } from "./auth/service/token-interceptor.service";
+import { CoreRoutingModule } from "./core-routing.module";
+import { HomeLayoutComponent } from "./home-layout/home-layout.component";
+import { LoginComponent } from "./login/login.component";
+import { ViewCoreComponent } from "./view-core/view-core.component";
 
 @NgModule({
-  declarations: [ViewCoreComponent, HomeLayoutComponent, AuthComponent, LoginComponent],
+  declarations: [
+    ViewCoreComponent, 
+    HomeLayoutComponent, 
+    AuthComponent, 
+    LoginComponent
+  ],
   imports: [
     CoreRoutingModule,
     ShareModule
