@@ -100,7 +100,7 @@ export class AuthService {
         if (this.userDetils.obj) {
           localStorage.setItem('userInfo', JSON.stringify(this.userDetils.obj));
           if (this.userDetils.obj.userDefaultPageLink) {
-            this.router.navigate(['emp']);
+            this.router.navigate(['view-core']);
             // this.router.navigate([this.userDetils.obj.userDefaultPageLink]);
           } else {
             this.router.navigate(['/']);

@@ -1,0 +1,19 @@
+<a id="show-sidebar" class="btn btn-sm btn-dark">
+    <i class="fas fa-bars"></i>
+</a>
+<nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+        <div class="sidebar-brand">
+            <!-- <div class="nav-logo-left">
+                <a class="nav-link opacity_0" routerLink="/dashboard"><img src="assets/images/logo.png"
+                        class="dashboardLogo" alt="patient.jpg"></a>
+            </div> -->
+            <div id="close-sidebar"> <i class="fas fa-bars"></i></div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidenav" *ngIf="newNavItems.length > 0">
+                <app-menu-list [navItems]="newNavItems"></app-menu-list>
+            </div>
+        </div>
+    </div>
+</nav>

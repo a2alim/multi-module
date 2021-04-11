@@ -10,15 +10,19 @@ import { CoreRoutingModule } from "./core-routing.module";
 import { HomeLayoutComponent } from "./home-layout/home-layout.component";
 import { LoginComponent } from "./login/login.component";
 import { ViewCoreComponent } from "./view-core/view-core.component";
+import { MenuListComponent } from './menu-list/menu-list.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     ViewCoreComponent, 
     HomeLayoutComponent, 
     AuthComponent, 
-    LoginComponent
+    LoginComponent, MenuListComponent, NavigationComponent
   ],
   imports: [
+    CommonModule,
     CoreRoutingModule,
     ShareModule
   ],
